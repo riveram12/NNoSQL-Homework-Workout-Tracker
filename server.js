@@ -1,12 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const logger = require("morgan");
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/workout";
+
+var path = require("path");
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-app.use(logger("dev"));
+
+var MONGODB_URI =
+  "mongodb+srv://riveram2:Luna%40Nyc12@cluster0.t6g9u.mongodb.net/Unit17?retryWrites=true&w=majority";
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -17,11 +19,26 @@ mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useFindAndModify: false,
 });
+console.log(MONGODB_URI);
 
 // routes
-app.use(require("./routes/apiRoutes.js"));
-app.use(require("./routes/htmlRoutes.js"));
+app.use(require(path.join(__dirname, "routes", "apiRoutes.js")));
+//app.use('/', require(path.join(__dirname, "/routes/htmlRoutes.js")));
+//
+
+// serve HTML files
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "exercise.html"));
+});
+
+app.get("/stats", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "stats.html"));
+});
 
 app.listen(PORT, () => {
-  console.log(`App running on port http://localhost:${PORT}!`);
+  console.log();
 });
